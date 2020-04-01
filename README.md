@@ -1,4 +1,5 @@
 # Java OpenTimelineIO
+
 This is a POC for building Java bindings for the OpenTimelineIO C++ API.
 
 The main goal of this was to experiment with embedding the compliled libraries
@@ -11,6 +12,7 @@ This was built on macOS Mojave with the Xcode developer tools (clang compiler).
 Your mileage will likely vary a lot in other circumstances.
 
 ### Pt. 1 OpenTimelineIO
+
 - Clone the OpenTimelineIO repo and fetch submodules according to instructions
 - Build opentimelineio by doing the following from the repo root:
 - `mkdir build && cd build`
@@ -20,6 +22,7 @@ Your mileage will likely vary a lot in other circumstances.
 - You should now have an `opentimelineio` directory in your `java-opentimelineio` root
 
 ### Pt. 2 Java OTIO
+
 - cd into the root of the java-opentimelineio repo
 - `make runtest`
 - You should see lots of building happen followed by the smoketest (`TestRT.java`) output.
@@ -35,5 +38,11 @@ Your mileage will likely vary a lot in other circumstances.
 - [ ] Clarify any licensing issues surrounding `handle.h` (if we stick with that approach)
 
 # Acknowledgments/References
+
 - [Native Utils](https://github.com/adamheinrich/native-utils)
 - [The Breakfast Post: Wrapping A C++ library with JNI](https://thebreakfastpost.com/2012/01/21/wrapping-a-c-library-with-jni-introduction/)
+
+# License
+
+This is provided as example code. License implications of other example code that has been referenced/copied has not been explored yet.
+The goal would be to clear this for the Apache 2.0 License in line with the main OTIO repo.
