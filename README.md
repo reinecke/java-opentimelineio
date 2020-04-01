@@ -1,42 +1,39 @@
 # Java OpenTimelineIO
-This is a POC for building Java bindings for the OpenTimelineIO C++ API. 
+This is a POC for building Java bindings for the OpenTimelineIO C++ API.
 
+The main goal of this was to experiment with embedding the compliled libraries
+in built jar files and building JNI bindings. There are many other issues to
+address such as how memory management should work.
 
 ## Instructions
 
-# Pt. 1 OpenTimelineIO
+This was built on macOS Mojave with the Xcode developer tools (clang compiler).
+Your mileage will likely vary a lot in other circumstances.
+
+### Pt. 1 OpenTimelineIO
 - Clone the OpenTimelineIO repo and fetch submodules according to instructions
-- export OTIO_ROOT=$(pwd)
-- Build opentimelineio by doing the following from the git root:
-- mkdir build && cd build
-- on the next step, make sure you update the prefix with the path to your java-opentimelineio
-- cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/java-opentimelineio/opentimelineio ..
-- make install
+- Build opentimelineio by doing the following from the repo root:
+- `mkdir build && cd build`
+- on the next step, make sure you update the prefix with the path to your where you cloned this repo. For instance, if you cloned java-opentimelineio to `~/Projects`, your prefix path would be `~/Projects/java-opentimelineio/opentimelineio`
+- `cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/java-opentimelineio/opentimelineio ..`
+- `make install`
+- You should now have an `opentimelineio` directory in your `java-opentimelineio` root
 
-# Pt. 2 Java OTIO
+### Pt. 2 Java OTIO
 - cd into the root of the java-opentimelineio repo
+- `make runtest`
+- You should see lots of building happen followed by the smoketest (`TestRT.java`) output.
+- `OpenTimelineIO.jar` should now exist in the `build` dir.
 
-- export JAVA_HOME=$(dirname $(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | cut -d "=" -f 2))
-- pushd src/main/java
-- javac -h . io/opentimeline/opentime/RationalTime.java 
-- popd
-- mkdir -p build/lib
-- clang++ -shared -std=c++11 -fPIC -I"${JAVA_HOME}/include" -I"${JAVA_HOME}/include/darwin" -Iopentimelineio/include -I opentimelineio/include/opentimelineio/deps -Isrc/main/java -Lopentimelineio/lib -lopentime -lopentimelineio -o build/lib/libopentime-jni.dylib src/main/jni/io_opentimeline_opentime_RationalTime.cpp
+## Known Issues/Open Questions
 
-- pushd src/main/java
-- javac -d ../../../build io/opentimeline/NativeUtils.java io/opentimeline/opentime/RationalTime.java
-- popd
-- jar cvf opentime.jar -C build .
-- javac -classpath opentime.jar TestRT.java
-- java -classpath opentime.jar:. TestRT
+- [ ] Come up with memory management strategy.
+- [ ] Come up with strategy for marshalling otio objects with less boilerplate/copying.
+- [ ] Validate the compiled libray linking works when moving jar between systems.
+- [ ] Look into if there is a way we can better consume the output of the OpenTimelineIO cmake build rather than building to our repo,
+- [ ] Determine how to distribute pre-built jars for multiple platforms.
+- [ ] Clarify any licensing issues surrounding `handle.h` (if we stick with that approach)
 
-
-# Packaging tips
-- NativeUtils.loadLibraryFromJar("/natives/"+System.mapLibraryName("crypt"))
-- https://github.com/adamheinrich/native-utils
-
-
-
-
-### deprecated notes
-- clang++ -shared -std=c++11 -fPIC -I"${JAVA_HOME}/include" -I"${JAVA_HOME}/include/darwin" -I/Users/ereinecke/envs/otio_cpp/include -I/Users/ereinecke/envs/otio_cpp/include/opentimelineio/deps -L/Users/ereinecke/envs/otio_cpp/lib -lopentime -lopentimelineio -o build/lib/libopentime-jni.dylib io_opentimeline_opentime_RationalTime.cpp 
+# Acknowledgments/References
+- [Native Utils](https://github.com/adamheinrich/native-utils)
+- [The Breakfast Post: Wrapping A C++ library with JNI](https://thebreakfastpost.com/2012/01/21/wrapping-a-c-library-with-jni-introduction/)

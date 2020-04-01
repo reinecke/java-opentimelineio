@@ -7,28 +7,13 @@
 #include <opentimelineio/errorStatus.h>
 
 #include "handle.h"
+#include "utilities.h"
 #include "io_opentimeline_opentime_RationalTime.h"
 
 using namespace std;
 
 namespace otio = opentime::OPENTIME_VERSION;
 namespace otio2 = opentimelineio::OPENTIMELINEIO_VERSION;
-
-
-jobject rationalTimeFromNative(JNIEnv *env, jobject srcObj, otio::RationalTime *native)
-{
-  jclass cls = env->GetObjectClass(srcObj);
-  if (cls == NULL) return NULL;
-
-   // Get the Method ID of the constructor which takes a long
-   jmethodID rtInit = env->GetMethodID(cls, "<init>", "(J)V");
-   if (NULL == rtInit) return NULL;
-
-   // Call back constructor to allocate a new instance, with an int argument
-   jobject newObj = env->NewObject(cls, rtInit, reinterpret_cast<jlong>(native));
-
-   return newObj;
-}
 
 
 /*
@@ -75,7 +60,7 @@ Java_io_opentimeline_opentime_RationalTime_add(JNIEnv *env, jobject thisObj, job
     auto other_ = getHandle<otio::RationalTime>(env, other);
     auto result = (*this_ + *other_);
 
-    return rationalTimeFromNative(env, thisObj, new otio::RationalTime(result));
+    return rationalTimeFromNative(env, new otio::RationalTime(result));
 }
 
 
@@ -90,7 +75,7 @@ Java_io_opentimeline_opentime_RationalTime_subtract (JNIEnv *env, jobject thisOb
     auto other_ = getHandle<otio::RationalTime>(env, other);
     auto result = (*this_ - *other_);
 
-    return rationalTimeFromNative(env, thisObj, new otio::RationalTime(result));
+    return rationalTimeFromNative(env, new otio::RationalTime(result));
 }
 
 

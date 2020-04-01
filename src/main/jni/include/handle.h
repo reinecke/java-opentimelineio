@@ -1,9 +1,11 @@
+// This file is nearly verbatim from:
+//   https://thebreakfastpost.com/2012/01/26/wrapping-a-c-library-with-jni-part-2/
+#include <jni.h>
+
 #ifndef _HANDLE_H_INCLUDED_
 #define _HANDLE_H_INCLUDED_
 
-#include <jni.h>
-
-jfieldID getHandleField(JNIEnv *env, jobject obj)
+inline jfieldID getHandleField(JNIEnv *env, jobject obj)
 {
     jclass c = env->GetObjectClass(obj);
     // J is the type signature for long:
